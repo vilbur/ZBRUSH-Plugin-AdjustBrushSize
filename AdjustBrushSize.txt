@@ -1,0 +1,100 @@
+
+/** Adjust Brush Sizes
+  *
+  * @par string $adjust_mode "Draw Size|Focal Shift|Z Intensity|RGB Intensity"
+  */
+[RoutineDef, adjustBrushSize
+,
+	[ISet,Zscript:Show Actions, 0]
+
+	[VarSet, $adjust_mode, [StrMerge, "Draw:", $adjust_mode]]
+
+	[VarSet, $current_size, [IGet, $adjust_mode ] ]
+
+	[VarDef, $value, 1]
+
+	[If, [Var, $current_size ] > 10
+	, // THEN
+		[VarSet, $value, 2]
+	]
+
+
+	[If, [Var, $increase ]
+	, // THEN
+		[ISet, $adjust_mode, [Var, $current_size] + [Var, $value] ]
+
+	, // ELSE
+
+		[ISet, $adjust_mode, [Var, $current_size] - [Var, $value] ]
+	]
+
+, // PARAMS
+	$adjust_mode, $increase
+]
+
+
+
+
+[ISubPalette,"Zplugin:AdjustBrushSize"]
+
+/** BUSH SIZE
+  */
+
+[IButton, "Zplugin:AdjustBrushSize:Draw Size minus","Decreases Draw Size",
+	[RoutineCall, adjustBrushSize, "Draw Size", 0 ]
+,,96, '-',, 48]
+//,,96,,,48]
+
+
+[IButton, "Zplugin:AdjustBrushSize:Draw Size plus","Increases Draw Size",
+	[RoutineCall, adjustBrushSize, "Draw Size", 1 ]
+,,96, '+',, 48]
+//,,96,,,48]
+
+
+
+/** FOCAL SHIFT
+  */
+[IButton, "Zplugin:AdjustBrushSize:Focal Shift minus","Decreases Focal Shift",
+	[RoutineCall, adjustBrushSize, "Focal Shift", 0 ]
+
+,,96, Shift+'-',, 48]
+//,,96,,,48]
+
+
+[IButton, "Zplugin:AdjustBrushSize:Focal Shift plus","Increases Focal Shift",
+	[RoutineCall, adjustBrushSize, "Focal Shift", 1 ]
+,,96, Shift+'+',, 48]
+//,,96,,,48]
+
+
+
+
+/** Z INTENSITY
+  */
+[IButton, "Zplugin:AdjustBrushSize:Z Intensity minus","Decreases Intensity",
+	[RoutineCall, adjustBrushSize, "Z Intensity", 0 ]
+
+,,96, Alt+'-',, 48]
+//,,96,,,48]
+
+
+[IButton, "Zplugin:AdjustBrushSize:Z Intensity plus","Increases Intensity",
+	[RoutineCall, adjustBrushSize, "Z Intensity", 1 ]
+,,96, Alt+'+',, 48]
+//,,96,,,48]
+
+
+
+/** RGB INTENSITY
+  */
+[IButton, "Zplugin:AdjustBrushSize:RGB minus","Decreases Intensity",
+	[RoutineCall, adjustBrushSize, "RGB Intensity", 0 ]
+,,96, Alt+'-',, 48]
+//,,96,,,48]
+
+
+[IButton, "Zplugin:AdjustBrushSize:RGB plus","Increases Intensity",
+	[RoutineCall, adjustBrushSize, "RGB Intensity", 1 ]
+,,96, Alt+'+',, 48]
+//,,96,,,48]
