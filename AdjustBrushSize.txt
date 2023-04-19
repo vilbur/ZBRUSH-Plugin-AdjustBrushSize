@@ -7,29 +7,43 @@
 ,
 	[ISet,Zscript:Show Actions, 0]
 
-	[VarSet, $adjust_mode, [StrMerge, "Draw:", $adjust_mode]]
+	[VarDef, value_offset,	2]
+	//[VarDef, value_new,	0]
 
-	[VarSet, $current_size, [IGet, $adjust_mode ] ]
+	[VarSet, adjust_mode, [StrMerge, "Draw:", adjust_mode_parmam]]
 
-	[VarDef, $value, 1]
+	[VarSet, brush_size, [IGet, adjust_mode ] ]
 
-	[If, [Var, $current_size ] > 10
+
+
+	[If, [Var, brush_size ] < 10
 	, // THEN
-		[VarSet, $value, 2]
+		[VarSet, value_offset, 1]
+	]
+
+	[If, [Var, brush_size ] < 5
+	, // THEN
+		[VarSet, value_offset, 0.5]
 	]
 
 
-	[If, [Var, $increase ]
+
+	[If, [Var, increase ]
 	, // THEN
-		[ISet, $adjust_mode, [Var, $current_size] + [Var, $value] ]
-
-	, // ELSE
-
-		[ISet, $adjust_mode, [Var, $current_size] - [Var, $value] ]
+		[VarAdd, brush_size,	value_offset]
+	, // ELSEVarAdd
+		[VarSub, brush_size,	value_offset]
 	]
+
+
+	[If, [Var, brush_size ] > 0
+	, // THEN
+		[ISet, adjust_mode, [Var, brush_size] ]
+	]
+
 
 , // PARAMS
-	$adjust_mode, $increase
+	adjust_mode_parmam, increase
 ]
 
 
