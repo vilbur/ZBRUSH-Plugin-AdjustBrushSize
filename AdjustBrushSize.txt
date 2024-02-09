@@ -15,6 +15,18 @@
 	[VarSet, brush_size, [IGet, adjust_mode ] ]
 
 
+	[If, [Var, brush_size ] > 5
+	, // THEN
+		[VarSet, brush_size, INT([Var, brush_size]) ]
+	]
+
+
+
+	/* CHANGE BY DIFFERNET VALUES BASED ON CURRENT VALUE */
+	[If, [Var, brush_size ] > 50
+	, // THEN
+		[VarSet, value_offset, 5]
+	]
 
 	[If, [Var, brush_size ] < 10
 	, // THEN
@@ -27,7 +39,7 @@
 	]
 
 
-
+	/* ADD OR REMOVE VALUE */
 	[If, [Var, increase ]
 	, // THEN
 		[VarAdd, brush_size,	value_offset]
@@ -35,12 +47,13 @@
 		[VarSub, brush_size,	value_offset]
 	]
 
-
+	/* SET BRUSH SIZE */
 	[If, [Var, brush_size ] > 0
 	, // THEN
 		[ISet, adjust_mode, [Var, brush_size] ]
+	, // ELSE
+		[ISet, adjust_mode, 0.5 ]
 	]
-
 
 , // PARAMS
 	adjust_mode_parmam, increase
