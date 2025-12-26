@@ -1,13 +1,13 @@
-
 /** Adjust Brush Sizes
   *
-  * @par string $adjust_mode "Draw Size|Focal Shift|Z Intensity|RGB Intensity"
+  * @par string adjust_mode "Draw Size|Focal Shift|Z Intensity|RGB Intensity"
   */
 [RoutineDef, adjustBrushSize
 ,
 	[ISet,Zscript:Show Actions, 0]
 
-	[VarDef, value_offset,	2]
+	[VarDef, value_offset,	1]
+	//[VarDef, value_offset,	2]
 	//[VarDef, value_new,	0]
 
 	[VarSet, adjust_mode, [StrMerge, "Draw:", adjust_mode_parmam]]
@@ -15,24 +15,25 @@
 	[VarSet, brush_size, [IGet, adjust_mode ] ]
 
 
+	/* SET SIZE VALUE TO INTEGER */ 
 	[If, [Var, brush_size ] > 5
 	, // THEN
 		[VarSet, brush_size, INT([Var, brush_size]) ]
 	]
 
 
-
-	/* CHANGE BY DIFFERNET VALUES BASED ON CURRENT VALUE */
-	[If, [Var, brush_size ] > 50
-	, // THEN
-		[VarSet, value_offset, 5]
-	]
-
-	[If, [Var, brush_size ] < 10
-	, // THEN
-		[VarSet, value_offset, 1]
-	]
-
+	//
+	///* CHANGE BY DIFFERNET VALUES BASED ON CURRENT VALUE */
+	//[If, [Var, brush_size ] > 50
+	//, // THEN
+	//	[VarSet, value_offset, 5]
+	//]
+	//
+	//[If, [Var, brush_size ] < 10
+	//, // THEN
+	//	[VarSet, value_offset, 1]
+	//]
+	//
 	[If, [Var, brush_size ] < 5
 	, // THEN
 		[VarSet, value_offset, 0.5]
@@ -41,75 +42,99 @@
 
 	/* ADD OR REMOVE VALUE */
 	[If, [Var, increase ]
-	, // THEN
+	
+	, // THEN add
 		[VarAdd, brush_size,	value_offset]
-	, // ELSEVarAdd
+	
+	, // ELSE remove
 		[VarSub, brush_size,	value_offset]
 	]
 
-	/* SET BRUSH SIZE */
-	[If, [Var, brush_size ] > 0
-	, // THEN
+	
+	///* SET BRUSH SIZE */
+	//[If, [Var, brush_size ] > 0
+	//
+	//, // THEN
 		[ISet, adjust_mode, [Var, brush_size] ]
-	, // ELSE
-		[ISet, adjust_mode, 0.5 ]
-	]
-
+	//
+	//, // ELSE
+	//	[ISet, adjust_mode, 0.5 ]
+	//]
+	//[NoteBar, [Var, brush_size ] ]
+ 
 , // PARAMS
 	adjust_mode_parmam, increase
 ]
 
 
 
-
+/*------------------------------------------------------------------------------
+	CREATE PALETTE
+--------------------------------------------------------------------------------*/
 [ISubPalette,"Zplugin:AdjustBrushSize"]
 
-/** BUSH SIZE
-  */
 
+
+/*------------------------------------------------------------------------------
+	BUTTONS
+	
+	219: [
+	221: ]
+	731: Ctrl+[
+	733: Ctrl+]
+	475: Shift+[
+	477: Shift+]
+	
+--------------------------------------------------------------------------------*/
+
+		
+
+/** ---------------------------- BUSH SIZE -----------------------
+  */
 [IButton, "Zplugin:AdjustBrushSize:Draw Size minus","Decreases Draw Size",
 	[RoutineCall, adjustBrushSize, "Draw Size", 0 ]
-,,96, '-',, 48]
+,,96, 219,, 48]
 //,,96,,,48]
 
 
 [IButton, "Zplugin:AdjustBrushSize:Draw Size plus","Increases Draw Size",
 	[RoutineCall, adjustBrushSize, "Draw Size", 1 ]
-,,96, '+',, 48]
+,,96, 221,, 48]
 //,,96,,,48]
 
 
-
-/** FOCAL SHIFT
-  */
-[IButton, "Zplugin:AdjustBrushSize:Focal Shift minus","Decreases Focal Shift",
-	[RoutineCall, adjustBrushSize, "Focal Shift", 0 ]
-
-,,96, Shift+'-',, 48]
-//,,96,,,48]
-
-
-[IButton, "Zplugin:AdjustBrushSize:Focal Shift plus","Increases Focal Shift",
-	[RoutineCall, adjustBrushSize, "Focal Shift", 1 ]
-,,96, Shift+'+',, 48]
-//,,96,,,48]
-
-
-
-
-/** Z INTENSITY
+/** ---------------------------- Z INTENSITY -----------------------
   */
 [IButton, "Zplugin:AdjustBrushSize:Z Intensity minus","Decreases Intensity",
 	[RoutineCall, adjustBrushSize, "Z Intensity", 0 ]
 
-,,96, Alt+'-',, 48]
+,,96, 731,, 48] // 475: Shift+[
 //,,96,,,48]
 
 
 [IButton, "Zplugin:AdjustBrushSize:Z Intensity plus","Increases Intensity",
 	[RoutineCall, adjustBrushSize, "Z Intensity", 1 ]
-,,96, Alt+'+',, 48]
+,,96, 733,, 48] // 477: Shift+]
 //,,96,,,48]
+
+
+
+
+
+/** ---------------------------- FOCAL SHIFT -----------------------
+  */
+[IButton, "Zplugin:AdjustBrushSize:Focal Shift minus","Decreases Focal Shift",
+	[RoutineCall, adjustBrushSize, "Focal Shift", 0 ]
+
+,,96, 475,, 48]
+//,,96,,,48]
+
+
+[IButton, "Zplugin:AdjustBrushSize:Focal Shift plus","Increases Focal Shift",
+	[RoutineCall, adjustBrushSize, "Focal Shift", 1 ]
+,,96, 477,, 48]
+//,,96,,,48]
+
 
 
 
@@ -117,11 +142,11 @@
   */
 [IButton, "Zplugin:AdjustBrushSize:RGB minus","Decreases Intensity",
 	[RoutineCall, adjustBrushSize, "RGB Intensity", 0 ]
-,,96, Alt+'-',, 48]
+,,96,,, 48]
 //,,96,,,48]
 
 
 [IButton, "Zplugin:AdjustBrushSize:RGB plus","Increases Intensity",
 	[RoutineCall, adjustBrushSize, "RGB Intensity", 1 ]
-,,96, Alt+'+',, 48]
+,,96,,, 48]
 //,,96,,,48]
