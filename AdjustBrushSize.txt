@@ -1,69 +1,89 @@
 /** Adjust Brush Sizes
   *
-  * @par string adjust_mode "Draw Size|Focal Shift|Z Intensity|RGB Intensity"
+  * @par string adjust_mode "Draw Size|Focal Shift|Z Intensity|RGB Intensity|Adjsut last"
   */
 [RoutineDef, adjustBrushSize
 ,
 	[ISet,Zscript:Show Actions, 0]
 
-	[VarDef, value_offset,	1]
+	[VarDef, value_new,	0]
+	[VarSet, value_offset,	1]
 	//[VarDef, value_offset,	2]
-	//[VarDef, value_new,	0]
 
-	[VarSet, adjust_mode, [StrMerge, "Draw:", adjust_mode_parmam]]
+	
+	/*------ GET CONTROL PREFIX ------*/
+	//[VarDef, ctrl_prefix,	"Stroke:" ]
+	[VarDef, ctrl_prefix,	"" ]
+	//
 
-	[VarSet, brush_size, [IGet, adjust_mode ] ]
-
-
-	/* SET SIZE VALUE TO INTEGER */ 
-	[If, [Var, brush_size ] > 5
+	//[If, [Var, slider_name ] === "AdjustLast"
+	[If, [StrFind, slider_name, "AdjustLast" ] == 0
 	, // THEN
-		[VarSet, brush_size, INT([Var, brush_size]) ]
+		[VarSet, ctrl_prefix, "Stroke" ]
+		
+	, // ELSE
+		[VarSet, ctrl_prefix, "Draw" ]
+		
 	]
-
-
+	
+	
+	/*------ GET SLIDER CONTROL ------*/
+	[VarSet, slider_control, [StrMerge, ctrl_prefix, ":", slider_name]]
+	
+	/* GET VALUE */ 
+	[VarSet, slider_value, [IGet, slider_control ] ]
+	
+	
+	/* SET SIZE VALUE TO INTEGER */ 
+	[If, [Var, slider_value ] > 5
+	, // THEN
+		[VarSet, slider_value, INT([Var, slider_value]) ]
+	]
+	
+	
+	
 	//
 	///* CHANGE BY DIFFERNET VALUES BASED ON CURRENT VALUE */
-	//[If, [Var, brush_size ] > 50
+	//[If, [Var, slider_value ] > 50
 	//, // THEN
 	//	[VarSet, value_offset, 5]
 	//]
 	//
-	//[If, [Var, brush_size ] < 10
+	//[If, [Var, slider_value ] < 10
 	//, // THEN
 	//	[VarSet, value_offset, 1]
 	//]
 	//
-	[If, [Var, brush_size ] < 5
+	[If, [Var, slider_value ] < 5
 	, // THEN
 		[VarSet, value_offset, 0.5]
 	]
-
-
+	
+	
 	/* ADD OR REMOVE VALUE */
 	[If, [Var, increase ]
 	
 	, // THEN add
-		[VarAdd, brush_size,	value_offset]
+		[VarAdd, slider_value,	value_offset]
 	
 	, // ELSE remove
-		[VarSub, brush_size,	value_offset]
+		[VarSub, slider_value,	value_offset]
 	]
-
+	
 	
 	///* SET BRUSH SIZE */
-	//[If, [Var, brush_size ] > 0
+	//[If, [Var, slider_value ] > 0
 	//
 	//, // THEN
-		[ISet, adjust_mode, [Var, brush_size] ]
+		[ISet, slider_control, [Var, slider_value] ]
 	//
 	//, // ELSE
 	//	[ISet, adjust_mode, 0.5 ]
 	//]
-	//[NoteBar, [Var, brush_size ] ]
+	//[NoteBar, [Var, slider_value ] ]
  
 , // PARAMS
-	adjust_mode_parmam, increase
+	slider_name, increase
 ]
 
 
@@ -80,11 +100,15 @@
 	
 	219: [
 	221: ]
+	
 	731: Ctrl+[
 	733: Ctrl+]
+	
 	475: Shift+[
 	477: Shift+]
 	
+	987: Ctrl+Shift+[
+	989: Ctrl+Shift+]
 --------------------------------------------------------------------------------*/
 
 		
@@ -138,7 +162,7 @@
 
 
 
-/** RGB INTENSITY
+/** ---------------------------- RGB INTENSITY -----------------------
   */
 [IButton, "Zplugin:AdjustBrushSize:RGB minus","Decreases Intensity",
 	[RoutineCall, adjustBrushSize, "RGB Intensity", 0 ]
@@ -149,4 +173,22 @@
 [IButton, "Zplugin:AdjustBrushSize:RGB plus","Increases Intensity",
 	[RoutineCall, adjustBrushSize, "RGB Intensity", 1 ]
 ,,96,,, 48]
+//,,96,,,48]
+
+
+
+/** ---------------------------- ADJUST LAST -----------------------
+
+
+/** ADJUST LAST
+  */
+[IButton, "Zplugin:AdjustBrushSize:AdjustLast minus","Decreases Intensity",
+	[RoutineCall, adjustBrushSize, "AdjustLast", 0 ]
+,,96,987,, 48]
+//,,96,,,48]
+
+
+[IButton, "Zplugin:AdjustBrushSize:AdjustLast plus","Increases Intensity",
+	[RoutineCall, adjustBrushSize, "AdjustLast", 1 ]
+,,96,989,, 48]
 //,,96,,,48]
